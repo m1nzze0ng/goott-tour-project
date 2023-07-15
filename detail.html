@@ -53,8 +53,12 @@
 	<link rel="stylesheet" href="css/flexslider.css">
 	<!-- Theme style  -->
 	<link rel="stylesheet" href="css/style.css">
-	<script src="./js/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="./slick/slick.css" />
+    <link rel="stylesheet" type="text/css" href="./slick/slick-theme.css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script type="text/javascript" src="./slick/slick.min.js"></script>
 	<script src="./js/commonJs.js"></script>
+	
 
 	<!-- Modernizr JS -->
 	<!-- <script src="js/modernizr-2.6.2.min.js"></script> -->
@@ -91,53 +95,57 @@
           success: function (data) {
             console.log(data);
             parsingData(data);
-            // getSlideData();
+            showSlide(data);
           },
           error: function () {}, // 통신이 실패(부정적인 response) 했을 때 호출되는 콜백함수
           complete: function () {}, // 통신이 완료 되었을때 호출 되는 콜백함수
         });
-		function parsingData(tourData) {
-		  // let contentId = tourData.response.body.items.item.contentid;
-		  const tourAr = tourData.response.body.items.item[0];
-		  console.log(tourAr);
-		  // const title = tourData.response.body.items.item.title;
-  
-		  let output = '';
-		  output += `<div class="fh5co-narrow-content">`;
-		  output += `<div class="row row-bottom-padded-md">`;
-		  output += `<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">`;
-		  output += `<h2 class="fh5co-heading">${tourAr.title}</h2>`;
-		  output += `<img class="img-responsive" src="${tourAr.firstimage}" alt="Free HTML5 Bootstrap Template by FreeHTML5.co">`;
-		  output +=`</div>`;
-		  output +=`<div>`;
-		  output +=`<p class="overview">${tourAr.overview}</p>`;
-		  output +=`</div>`;
-		  output +=`</div>`;
-		  output +=``;
-		  
-		  
-		  $('.detail').html(output);
-		}
-
+		
 		function showSlide(imgData) {
-        let images = '';
-        $.each(imgData.response.body.items.item, function (i, image) {
-          images += `<div><img src='${image.firstimage}' /></div>`;
-          images += `<div><img src='${image.firstimage2}' /></div>`;
-        });
-
-        $('.imgSlide').html(images);
-
-        $('.imgSlide').slick({
-          dots: true,
-          infinite: true,
+			$.noConflict();
+			// console.log(imgData)
+			let images = '';
+			$.each(imgData.response.body.items.item, function (i, image) {
+				images += `<div><img src='${image.firstimage}' /></div>`;
+				images += `<div><img src='${image.firstimage2}' /></div>`;
+			});
+			
+			$('.imgSlide').html(images);
+			
+			$('.imgSlide').slick({
+				dots: true,
+				infinite: true,
           speed: 500,
           fade: true,
-          // arrows: true,
+          arrows: true,
           cssEase: 'linear',
-          // accessibility: true,
+          accessibility: true,
         });
-      }
+	}
+	function parsingData(tourData) {
+	  // let contentId = tourData.response.body.items.item.contentid;
+	  const tourAr = tourData.response.body.items.item[0];
+	  console.log(tourAr);
+	  // const title = tourData.response.body.items.item.title;
+
+	//   let title = '';
+	//   output += `<div class="fh5co-narrow-content">`;
+	//   output += `<div class="row row-bottom-padded-md">`;
+	//   output += `<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">`;
+	  let title = tourAr.title;
+	//   output += `<img class="img-responsive" src="${tourAr.firstimage}" alt="Free HTML5 Bootstrap Template by FreeHTML5.co">`;
+	//   output +=`</div>`;
+	//   output +=`<div>`;
+		
+	  let overview = tourAr.overview;
+	//   output +=`</div>`;
+	//   output +=`</div>`;
+	//   output +=``;
+	  
+	  
+	  $('.fh5co-heading').html(title);
+	  $('.overview').html(overview);
+	}
       }
 
 	</SCript>
@@ -199,8 +207,17 @@
 			  </nav>
 				
 			  <div class="container">
-				  <div class="detail"></div>
-				
+				  <div class="detail">
+					<div class="fh5co-narrow-content">
+						<div class="row row-bottom-padded-md">
+							<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
+								<h2 class="fh5co-heading"></h2>
+								<div class="imgSlide"></div>
+								<p class="overview"></p>
+							</div>
+						</div>
+					</div>
+				  </div>
 			  </div>
 
 			
