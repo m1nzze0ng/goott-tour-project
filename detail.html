@@ -81,6 +81,20 @@
 					contentId = getParameter('contentId');
 					getTourData(contentId);
 				}
+
+		$('.navbar-nav:first').addClass('on');
+		$('.contents:first').addClass('on');
+		$('.navbar-nav a').on('click',function(e){
+			e.preventDefault()
+
+			const tab = $(this).attr('href');
+
+			$('.navbar-nav').removeClass('on');
+			$('.contents').removeClass('on');
+
+			$(this).parent().addClass('on');
+			$(tab).addClass('on');
+		} );
 			});
 	
 	  function getTourData(contentId) {
@@ -96,6 +110,7 @@
             console.log(data);
             parsingData(data);
 			detailData(data);
+			getCourseData(data);
 			
           },
           error: function () {}, // 통신이 실패(부정적인 response) 했을 때 호출되는 콜백함수
@@ -190,12 +205,52 @@
 
 		$('.table-striped').append(addr1);
 	}
+	function getCourseData(){
+		const url =`https://apis.data.go.kr/B551011/KorService1/detailInfo1?serviceKey=${apiKey}&contentId=${contentId}&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&contentTypeId=25&_type=json`;
+		
+        $.ajax({
+          url: url, // 데이터를 수신받을 서버 주소
+          type: 'get', // 통신방식(GET, POST, PUT, DELETE)
+          dataType: 'json', // 수신받을 데이터 타입
+          async: false,
+          success: function (data) {
+            console.log(data);
+			course(data);
+          },
+          error: function () {
+		  }, // 통신이 실패(부정적인 response) 했을 때 호출되는 콜백함수
+          complete: function () {}, // 통신이 완료 되었을때 호출 되는 콜백함수
+        });
+	}
+	function course(CourseData){
+		const courseList = CourseData.response.body.items.item[0];
+		console.log(courseList);
+		
+		let courseInfo = '';
+		let subnum = courseList.subnum;
+		$.each(courseList, function(i, item){
+			console.log(i, item);
+		
+				courseInfo += `<tr>`;
+				courseInfo += `<th>${courseList.subname}</th>`;
+				courseInfo += `</tr>`;
+				courseInfo += `<tr>`;
+				courseInfo += `<td><img src="${courseList.subdetailimg}"></td`;
+				courseInfo += `</tr>`;	
+				courseInfo += `<tr>`;	
+				courseInfo += `<td>${courseList.subdetailoverview}</td>`;
+				courseInfo += `</tr>`;
 
+			});
+			$('.course').html(courseInfo);
+
+
+	}
+
+
+	
 	</script>
 	<style>
-		.fh5co-heading, .overview, .firstImg{
-			text-align: center;
-		}
 		.overview{
 			width: 500px;
 			font-size: medium;
@@ -213,9 +268,17 @@
 		.fh5co-narrow-content{
 			padding:30px 0 20px 0;
 		}
-		.list{
-			text-align: right;
+		.contents{
+			display: none;
 		}
+		.contents.on{
+			display: block;
+		}
+		.course{
+			width: 660px;
+			margin: 0px;
+		}
+		
 	</style>
 	</head>
 	<body>
@@ -252,31 +315,41 @@
 		<div id="fh5co-main">
 			<nav class="navbar navbar-default">
 				<div class="container-fluid">
-				  <ul class="nav navbar-nav">
-					<li><a href="#tab1">소개정보</a></li>
-					<li><a href="#tab2">코스정보</a></li>
-					<li><a href="#tab3">목록</a></li>
-				  </ul>
+					<!-- <div class="tab"> -->
+						<ul class="nav navbar-nav">
+							<li class="item"><a href="#tab1">소개정보</a></li>
+							<li class="item"><a href="#tab2">코스정보</a></li>
+							<li class="item"><a href="#">목록</a></li>
+						</ul>
+					<!-- </div> -->
+
+						<div class="tabContents">
+							<div id="tab1" class="contents">
+							  <div class="fh5co-narrow-content">
+								  <div class="row row-bottom-padded-md">
+									  <div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
+										  <h2 class="fh5co-heading"></h2>
+										  <div class="firstImg"></div>
+										  <div id="map" style="width: 500px; height: 400px"></div>
+										  <p class="overview"></p>
+									  </div>
+								  </div>
+							  </div>
+							  <div class="container">
+								  <table class="table table-striped"></table>
+							  </div>
+							</div>
+							<div id="tab2" class="contents">
+							  <div class="container">
+								<div class="container">
+									<table class="table course"></table>
+								  </div>
+								</div>
+							</div>
+						  </div>
 				</div>
 			  </nav>	  
-				
-			  <div id="tab1">
-				<div class="fh5co-narrow-content">
-					<div class="row row-bottom-padded-md">
-						<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
-							<h2 class="fh5co-heading"></h2>
-							<div class="firstImg"></div>
-							<div id="map" style="width: 500px; height: 400px"></div>
-							<p class="overview"></p>
-						</div>
-					</div>
-				</div>
-				<div class="container">
-					<table class="table table-striped"></table>
-				</div>
-			  </div>
-			  <div id="tab2"></div>
-			  <div id="tab3"></div>
+
 		</div>
 	</div>
 
